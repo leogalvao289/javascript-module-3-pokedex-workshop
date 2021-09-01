@@ -1,4 +1,87 @@
-import { getAllPokemon, getOnePokemonSprite, getOnePokemon } from "./api.js";
+
+const renderPokemonCard = res => { // parte 3 
+  const cardElment = document.createElement('div'); // crear la div 
+  const cardFragmentHtml = '<div class="card"> <img class="card-img-top" src="" alt=""><div class="card-body"><p class="card-text"></p></div></div>'
+  cardElment.innerHTML = cardFragmentHtml;
+  console.log(res);
+  document.querySelector(".card-container").appendChild(cardElment); // anade el card 
+  document.querySelector(".card-text").innerHTML = res.name;  // pone el nombre 
+  document.querySelector(".card-img-top").src = res.sprites.back_default;  // pone las fotos de los pokemons 
+}
+
+const clearContent = () => {
+document.querySelector(".card-container").innerHTML = "";
+document.querySelector(".alert-container").innerHTML = "";
+document.querySelector(".list-group").innerHTML = "";
+}
+
+const renderAlert = (alertText) => {
+  const alertElement = document.createElement('div')
+  const alertFragmentHtml = '<div class="alert alert-danger" role="alert"></div>'
+  alertElement.innerHTML = alertFragmentHtml;
+  document.querySelector(".alert-container").appendChild(alertElement)
+  document.querySelector(".alert").innerHTML = alertText;
+   
+}
+
+const getSinglePokemon = async (search) => { // parte 2 
+  // async mui importante poner // cargar la informacion de search
+
+  try {
+    const url = `https://pokeapi.co/api/v2/pokemon/${search}`
+    const response = await fetch(url)
+    const parsedRes = await response.json() // tranformar JSON en objeto
+    clearContent() // evita cards de perquisa acumulados 
+    renderPokemonCard(parsedRes);
+  } catch (error) {    //try catch // poner siempre para saber los errores 
+    console.log(error)
+    clearContent() // mirar la function 
+    renderAlert(`Something went wrong with your search: ${search}`)
+  }
+}
+
+const renderPokemonList = (res) => {
+  res.results.forEach( (pokemon, i) => {
+ const listElement = document.createElement('li');
+ listElement.classList.add(`pokemon-${i+1}` , "list-group-item");
+ document.querySelector(".list-group").appendChild(listElement);
+ listElement.innerHTML= `<button class="btn btn-link">${pokemon.name}</button>`
+ document.querySelector(`.pokemon-${i+1}`).onclick = () => getSinglePokemon(i+1);
+ 
+   
+});
+ 
+}
+
+const getAllPokemon = async () => {  //funcion para cargar todos los pokemons 
+try {
+  const url = "https://pokeapi.co/api/v2/pokemon/" 
+  const response = await fetch(url)
+  const parsedRes = await response.json() 
+  clearContent(); // mirar la function 
+  renderPokemonList(parsedRes)
+} catch {
+  console.log(error);
+  clearContent() // mirar la function 
+  renderAlert(`Something went wrong with your request`)  //mirar la funcion 
+
+}
+}
+window.onload = () => { // el inicio de todo // parte  1 
+  document.querySelector('#search-button').addEventListener('click', () => {
+    const searchTerm = document.querySelector('.form-control').value
+    searchTerm && getSinglePokemon(searchTerm)  // evita error de la busqueda con el campo em blanco 
+  }
+  
+  )
+document.querySelector('#fetch-all').addEventListener('click',  //parte 4 
+() => {
+    getAllPokemon() // mirar la function 
+}
+)
+}
+
+/*import { getAllPokemon, getOnePokemonSprite, getOnePokemon } from "./api.js";
 
 async function createPokemonImage(url) {
   const pokemonImage = document.createElement("img");
@@ -59,4 +142,4 @@ async function init() {
   });
 }
 
-init();
+init(); */
