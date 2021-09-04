@@ -1,0 +1,11 @@
+.card-container {
+    width: 250px;
+    margin: 20px;
+    box-shadow: 0 10px 20px;
+  }
+
+.list-group-item {
+    display:flex;
+    flex-wrap: wrap;
+    justify-content: center;
+ }

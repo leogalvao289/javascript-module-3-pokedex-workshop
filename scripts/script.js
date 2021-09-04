@@ -1,12 +1,16 @@
 
-const renderPokemonCard = res => { // parte 3 
+const renderPokemonCard = jsonRes => { // parte 3 
   const cardElment = document.createElement('div'); // crear la div 
-  const cardFragmentHtml = '<div class="card"> <img class="card-img-top" src="" alt=""><div class="card-body"><p class="card-text"></p></div></div>'
+  const cardFragmentHtml = '<div class="card d-flex"> <img class="card-img-top" src="" class="img-fluid w-100" alt=""><div class="card-body"><p class="card-text d-flex justify-content-center"></p></div><div class="card-text_weight d-flex justify-content-center"</div></div>'
   cardElment.innerHTML = cardFragmentHtml;
-  console.log(res);
+  console.log(jsonRes);
   document.querySelector(".card-container").appendChild(cardElment); // anade el card 
-  document.querySelector(".card-text").innerHTML = res.name;  // pone el nombre 
-  document.querySelector(".card-img-top").src = res.sprites.back_default;  // pone las fotos de los pokemons 
+  document.querySelector(".card-text").innerHTML = jsonRes.name;  // pone el nombre 
+  document.querySelector(".card-img-top").src = jsonRes.sprites.back_default;  // pone las fotos de los pokemons 
+  document.querySelector(".card-text_weight").innerHTML = `Weight: ${jsonRes.weight} - Heigtht: ${jsonRes.height}`;
+  //document.querySelector(".card-text_height").innerHTML = `Height: ${jsonRes.height}`;
+  document.querySelector(".form-control").value = "";
+  
 }
 
 const clearContent = () => {
@@ -30,9 +34,9 @@ const getSinglePokemon = async (search) => { // parte 2
   try {
     const url = `https://pokeapi.co/api/v2/pokemon/${search}`
     const response = await fetch(url)
-    const parsedRes = await response.json() // tranformar JSON en objeto
+    const jsonRes = await response.json() // tranformar JSON en objeto
     clearContent() // evita cards de perquisa acumulados 
-    renderPokemonCard(parsedRes);
+    renderPokemonCard(jsonRes);
   } catch (error) {    //try catch // poner siempre para saber los errores 
     console.log(error)
     clearContent() // mirar la function 
@@ -40,8 +44,8 @@ const getSinglePokemon = async (search) => { // parte 2
   }
 }
 
-const renderPokemonList = (res) => {
-  res.results.forEach( (pokemon, i) => {
+const renderPokemonList = (jsonRes) => {
+  jsonRes.results.forEach( (pokemon, i) => {
  const listElement = document.createElement('li');
  listElement.classList.add(`pokemon-${i+1}` , "list-group-item");
  document.querySelector(".list-group").appendChild(listElement);
@@ -57,9 +61,9 @@ const getAllPokemon = async () => {  //funcion para cargar todos los pokemons
 try {
   const url = "https://pokeapi.co/api/v2/pokemon/" 
   const response = await fetch(url)
-  const parsedRes = await response.json() 
+  const parsedjsonRes = await response.json() 
   clearContent(); // mirar la function 
-  renderPokemonList(parsedRes)
+  renderPokemonList(parsedjsonRes)
 } catch {
   console.log(error);
   clearContent() // mirar la function 
